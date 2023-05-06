@@ -1,6 +1,6 @@
-package api;
+package api.mobileshop;
 
-import api.ext.ApiTestExtension;
+import api.mobileshop.ext.ApiTestExtension;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

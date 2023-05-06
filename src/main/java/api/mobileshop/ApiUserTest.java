@@ -1,6 +1,6 @@
-package api;
+package api.mobileshop;
 
-import api.ext.ApiTestExtension;
+import api.mobileshop.ext.ApiTestExtension;
 import com.github.javafaker.Faker;
 import io.restassured.http.Header;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 @ExtendWith(ApiTestExtension.class)
-@DisplayName("/api/cart")
-public class ApiCartAddPhoneTest {
+@DisplayName("/api/user")
+public class ApiUserTest {
 
     String token;
     String userName;
@@ -33,20 +34,16 @@ public class ApiCartAddPhoneTest {
                 .extract()
                 .jsonPath()
                 .getString("token");
-
     }
 
     @Test
-    void addPhoneTest() {
+    void successfulGetUserTest() {
         given()
                 .header(new Header("Authorization", "Bearer " + token))
-                .body("{\n" +
-                        "  \"product\": \"61b35d36dccbe752b78a2a8d\",\n" +
-                        "  \"quantity\": 1,\n" +
-                        "  \"user\": \"61b3677584790d001212a841\"\n" +
-                        "}")
-                .post("api/cart")
+                .get("/api/user")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .body("username", equalTo(userName));
+
     }
 }

@@ -1,25 +1,26 @@
-package api;
+package api.mobileshop;
 
-import api.ext.ApiTestExtension;
+import api.mobileshop.ext.ApiTestExtension;
 import com.github.javafaker.Faker;
-import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
 
 @ExtendWith(ApiTestExtension.class)
-@DisplayName("/api/user")
-public class ApiAuthRegisterTest {
+@DisplayName("/api/cart")
+public class ApiCartGetPhonesTest {
 
-    @Test
-    void registerTest() {
-        Faker faker = new Faker();
-        String userName = faker.name().fullName();
+    String token;
+    String userName;
 
-        given()
+    @BeforeEach
+    void setUp() {
+        userName = new Faker().name().fullName();
+        token = given()
                 .body("{\n" +
                         "  \"address\": \"russia\",\n" +
                         "  \"email\": \"sdgrdsg@vas.ru\",\n" +
@@ -29,11 +30,17 @@ public class ApiAuthRegisterTest {
                         "}")
                 .post("/api/auth/register")
                 .then()
-                .statusCode(201)
-                .body("address", equalTo("russia"))
-                .body("email", equalTo("sdgrdsg@vas.ru"))
-                .body("phone", equalTo("8999999999"))
-                .body("username", equalTo(userName));
+                .extract()
+                .jsonPath()
+                .getString("token");
+    }
 
+    @Test
+    void getPhonesTest() {
+        given()
+                .header(new Header("Authorization", "Bearer " + token))
+                .get("/api/cart")
+                .then()
+                .statusCode(200);
     }
 }

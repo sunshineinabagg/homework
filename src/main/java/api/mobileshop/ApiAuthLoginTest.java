@@ -1,6 +1,6 @@
-package api;
+package api.mobileshop;
 
-import api.ext.ApiTestExtension;
+import api.mobileshop.ext.ApiTestExtension;
 import com.github.javafaker.Faker;
 import io.restassured.http.Header;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @ExtendWith(ApiTestExtension.class)
 @DisplayName("/api/user")
-public class ApiUserTest {
+public class ApiAuthLoginTest {
 
     String token;
     String userName;
@@ -40,7 +40,11 @@ public class ApiUserTest {
     void successfulGetUserTest() {
         given()
                 .header(new Header("Authorization", "Bearer " + token))
-                .get("/api/user")
+                .body("{\n" +
+                        "  \"password\": \"vasya\",\n" +
+                        "  \"username\": \""+ userName + "\"\n" +
+                        "}")
+                .post("/api/auth/login")
                 .then()
                 .statusCode(200)
                 .body("username", equalTo(userName));
